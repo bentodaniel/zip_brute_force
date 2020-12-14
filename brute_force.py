@@ -50,13 +50,10 @@ def get_charset():
     elif charset_type == 5:
         return "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()[]{+-}"
         
-"""
-def get_charset_combinations(charset, minlength, maxlength):
+def get_charset_combinations(charset, maxlength):
     return (''.join(candidate)
         for candidate in chain.from_iterable(product(charset, repeat=i)
-        for i in range(minlength, maxlength)))
-"""
-
+        for i in range(1, maxlength + 1)))
 
 if __name__ == '__main__':
     zip_file = get_file()
@@ -69,19 +66,20 @@ if __name__ == '__main__':
     print("\n...Starting the Process....\n")
 
     start_time = time.time()
-
+    
     with ZipFile(zip_file) as zf:
-        for attempt in product(charset, repeat=pw_max_length):
-            pw = "".join(attempt)
+        for attempt in get_charset_combinations(charset, pw_max_length):
+            #pw = "".join(attempt)
+            pw = attempt
             try:
                 zf.extractall(pwd=bytes(pw,'utf-8'))
                 print ("The password is " + pw)
                 break
             except:
                 pass
-
+    
     elapsed_time = time.time() - start_time
-    print("Elapsed time: {}".format(elapsed_time), "\n")
+    print("Elapsed time: {}".format(elapsed_time), " seconds\n")
 
 
 
